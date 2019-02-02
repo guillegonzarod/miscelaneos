@@ -1,5 +1,6 @@
 import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class AjustesProvider {
@@ -8,7 +9,7 @@ export class AjustesProvider {
     mostrar_tutorial: true
   }
 
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform, private storage: Storage) {
     console.log('Hello AjustesProvider Provider');
   }
 
@@ -16,6 +17,18 @@ export class AjustesProvider {
     let promesa = new Promise((resolve, reject) => {
       if (this.platform.is("cordova")) {
         // Dispositivo
+        console.log("Inicializando storage...");
+        this.storage.ready()
+          .then(() => {
+            console.log("Storage listo...");
+            this.storage.get("ajustes")
+              .then(ajustes => {
+                if (ajustes) {
+                  this.ajustes = ajustes;
+                }
+                resolve();
+              });
+          });
 
       } else {
         // Escritorio
@@ -23,7 +36,6 @@ export class AjustesProvider {
         if (localStorage.getItem("ajustes")) {
           this.ajustes = JSON.parse(localStorage.getItem("ajustes"));
         }
-
         resolve();
       }
     });
@@ -33,6 +45,12 @@ export class AjustesProvider {
   guardar_storage() {
     if (this.platform.is("cordova")) {
       // Dispositivo
+      console.log("Inicializando storage...");
+      this.storage.ready()
+        .then(() => {
+          this.storage.set("ajustes", this.ajustes);
+        });
+
 
     } else {
       // Escritorio
