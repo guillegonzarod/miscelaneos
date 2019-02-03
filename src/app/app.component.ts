@@ -14,23 +14,33 @@ export class MyApp {
   rootPage: any;
 
   constructor(
-    platform: Platform,
+    private platform: Platform,
     statusBar: StatusBar,
     splashScreen: SplashScreen,
     private _ajustesProvider: AjustesProvider,
   ) {
     platform.ready().then(() => {
 
-      this._ajustesProvider.cargar_storage().then(()=>{
+      this._ajustesProvider.cargar_storage().then(() => {
         if (this._ajustesProvider.ajustes.mostrar_tutorial) {
           this.rootPage = IntroduccionPage;
         } else {
           this.rootPage = HomePage;
         }
+
+        this.platform.pause.subscribe(() => {
+          console.log("La Aplicación va a entrar en PAUSE");
+        });
+
+        this.platform.resume.subscribe(() => {
+          console.log("La Aplicación va a salir del PAUSE");
+        });
+
         statusBar.styleDefault();
         splashScreen.hide();
       });
     });
   }
+
 }
 

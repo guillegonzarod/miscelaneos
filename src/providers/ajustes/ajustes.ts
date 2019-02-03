@@ -21,6 +21,7 @@ export class AjustesProvider {
         this.storage.ready()
           .then(() => {
             console.log("Storage listo...");
+            // Obtenemos el valor de la clave 'ajustes':
             this.storage.get("ajustes")
               .then(ajustes => {
                 if (ajustes) {
@@ -48,6 +49,8 @@ export class AjustesProvider {
       console.log("Inicializando storage...");
       this.storage.ready()
         .then(() => {
+          // Asignamos el valor de la propiedad 'this.ajustes' a la clave 'ajustes' y los guardamos
+          // en el Storage nativo del dispositivo
           this.storage.set("ajustes", this.ajustes);
         });
 
@@ -58,4 +61,5 @@ export class AjustesProvider {
       localStorage.setItem("ajustes", JSON.stringify(this.ajustes)); // Browser > Application > Local Storage
     }
   }
+
 }
