@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -8,7 +8,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class Pagina2Page {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    private alertCtrl: AlertController, private loadingCtrl: LoadingController) {
   }
 
   ir_pagina3() {
@@ -17,13 +18,40 @@ export class Pagina2Page {
 
   ionViewCanEnter() {
     console.log("ionViewCanEnter");
+    /*
     let numero = Math.round(Math.random() * 10);
     console.log(numero);
     if (numero >= 3) {
       return true;
     } else {
       return false;
-    }
+    }*/
+
+    let promesa = new Promise((resolve, reject) => {
+      let confirmar = this.alertCtrl.create({
+        title: "¿Seguro?",
+        subTitle: "¿Estás seguro que deseas entrar?",
+        buttons: [
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar pulsado!!');
+              resolve(false);
+            }
+          },
+          {
+            text: 'Seguro!',
+            handler: () => {
+              console.log('Aceptar pulsado!!');
+              resolve(true);
+            }
+          }
+        ]
+      });
+      confirmar.present();
+    });
+
+    return promesa;
   }
 
   ionViewDidLoad() {
@@ -41,8 +69,17 @@ export class Pagina2Page {
   ionViewCanLeave() {
     console.log("ionViewCanLeave");
     console.log("Espera 2 segundos para salir");
+
+    let loading = this.loadingCtrl.create({
+      content: "Espere por favor..."
+    });
+    // Mostramos el 'Loading'
+    loading.present();
+
     let promesa = new Promise((resolve, reject) => {
       setTimeout(() => {
+        // Quitamos el 'Loading'
+        loading.dismiss();
         resolve(true);
       }, 2000);
     });
